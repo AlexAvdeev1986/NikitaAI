@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Agent Developer | Nikita - Создаю нейросотрудников для бизнеса</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -34,6 +35,12 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(10, 10, 10, 0.98);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
         }
 
         nav .container {
@@ -82,6 +89,15 @@
 
         nav a:hover::after {
             width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
         }
 
         /* Cover Section */
@@ -179,6 +195,7 @@
             padding: 8px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .portfolio-item:hover {
@@ -240,6 +257,9 @@
             height: 100%;
             overflow: hidden;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .photo-frame::before {
@@ -324,6 +344,7 @@
             border: 1px solid rgba(102, 126, 234, 0.2);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .portfolio-card::before {
@@ -685,10 +706,6 @@
             .main-title {
                 font-size: 52px;
             }
-
-            nav ul {
-                display: none;
-            }
         }
 
         @media (max-width: 768px) {
@@ -720,15 +737,152 @@
             nav .logo {
                 font-size: 20px;
             }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.98);
+                flex-direction: column;
+                padding: 20px;
+                text-align: center;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            nav ul.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            transform: translateY(50px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .modal-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .modal-features li {
+            padding: 8px 0;
+            color: #b0b0b0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-features li:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
 <body>
+    <!-- Loading Animation -->
+    <div class="loading-container" id="loading">
+        <div class="loader"></div>
+    </div>
+
     <!-- Navigation -->
-    <nav>
+    <nav id="navbar">
         <div class="container">
             <div class="logo">AI Agent Dev</div>
-            <ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul id="navMenu">
                 <li><a href="#portfolio">Портфолио</a></li>
                 <li><a href="#stack">Технологии</a></li>
                 <li><a href="#services">Услуги</a></li>
@@ -751,27 +905,27 @@
 
                 <h2 class="section-title">Портфолио нейросотрудников:</h2>
                 <ul class="portfolio-list">
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal1">
                         <span class="icon">🎯</span>
                         <span><strong>Нейро-контроль качества</strong> — анализ звонков (OpenAI Whisper + GPT-4)</span>
                     </li>
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal2">
                         <span class="icon">👥</span>
                         <span><strong>Нейро-HR</strong> — автоматизация подбора персонала</span>
                     </li>
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal3">
                         <span class="icon">📝</span>
                         <span><strong>Нейро-контент-мейкер</strong> — генерация контента</span>
                     </li>
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal4">
                         <span class="icon">✈️</span>
                         <span><strong>Нейро-секретарь</strong> — обработка запросов</span>
                     </li>
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal5">
                         <span class="icon">🎬</span>
                         <span><strong>Нейро-видеоагент</strong> — таблица экзаменов</span>
                     </li>
-                    <li class="portfolio-item">
+                    <li class="portfolio-item" data-modal="modal6">
                         <span class="icon">📊</span>
                         <span><strong>Нейроконтентагент</strong> — генератор сценариев</span>
                     </li>
@@ -786,6 +940,7 @@
             <div class="right-section">
                 <div class="photo-container">
                     <div class="photo-frame">
+                        <!-- Замените этот URL на ваше реальное фото -->
                         <img src="photo_2025-10-14_18-20-51.jpg" alt="Professional Photo">
                     </div>
                     <div class="logo-badge">
@@ -804,43 +959,43 @@
             <p class="page-subtitle">Готовые решения для автоматизации вашего бизнеса</p>
             
             <div class="portfolio-grid">
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal1">
                     <div class="card-icon">🎯</div>
                     <h3>Нейро-контроль качества</h3>
                     <p>Анализ звонков с использованием OpenAI Whisper + GPT-4: транскрибация, выявление проблем и рекомендации по улучшению</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal2">
                     <div class="card-icon">👥</div>
                     <h3>Нейро-HR</h3>
                     <p>Автоматизация подбора и адаптации персонала. Скрининг резюме, проведение первичных интервью и оценка кандидатов</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal3">
                     <div class="card-icon">📝</div>
                     <h3>Нейро-экзаменатор</h3>
                     <p>Проверка знаний и навыков сотрудников. Автоматическое тестирование и оценка компетенций</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal4">
                     <div class="card-icon">📊</div>
                     <h3>Нейро-контент-мейкер + трафиколог</h3>
                     <p>Генерация контента и управление рекламой. Создание постов, настройка и оптимизация рекламных кампаний</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal5">
                     <div class="card-icon">💼</div>
                     <h3>Нейро-продажник</h3>
                     <p>Квалификация лидов и автоматизация продаж. Общение с клиентами, выявление потребностей и закрытие сделок</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal6">
                     <div class="card-icon">✈️</div>
                     <h3>Нейро-секретарь</h3>
                     <p>Обработка запросов и управление коммуникациями. Ответы на вопросы, запись на встречи и координация задач</p>
                 </div>
 
-                <div class="portfolio-card">
+                <div class="portfolio-card" data-modal="modal7">
                     <div class="card-icon">🎬</div>
                     <h3>Нейро-копирайтер по видео</h3>
                     <p>Создание сценариев и описаний для видеоконтента. Генерация идей, написание текстов и оптимизация под SEO</p>
@@ -939,5 +1094,220 @@
             <p>&copy; 2024 AI Agent Developer | Шухоров Никита Сергеевич. Все права защищены.</p>
         </div>
     </footer>
+
+    <!-- Modal Windows -->
+    <div class="modal" id="modal1">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-контроль качества</h3>
+            <p class="modal-description">Автоматизированная система анализа звонков с использованием OpenAI Whisper и GPT-4. Обеспечивает полный контроль качества коммуникаций с клиентами.</p>
+            <ul class="modal-features">
+                <li>Транскрибация аудиозаписей звонков</li>
+                <li>Анализ тона и эмоциональной окраски разговора</li>
+                <li>Выявление проблемных моментов в диалоге</li>
+                <li>Автоматические рекомендации по улучшению</li>
+                <li>Интеграция с CRM-системами</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal2">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-HR</h3>
+            <p class="modal-description">Интеллектуальная система автоматизации процессов подбора и адаптации персонала.</p>
+            <ul class="modal-features">
+                <li>Автоматический скрининг резюме</li>
+                <li>Проведение первичных интервью</li>
+                <li>Оценка компетенций кандидатов</li>
+                <li>Анализ соответствия требованиям вакансии</li>
+                <li>Интеграция с системами управления персоналом</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal3">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-контент-мейкер</h3>
+            <p class="modal-description">Автоматизированная система создания контента для различных платформ и каналов коммуникации.</p>
+            <ul class="modal-features">
+                <li>Генерация текстового контента</li>
+                <li>Создание постов для социальных сетей</li>
+                <li>Написание статей и пресс-релизов</li>
+                <li>Адаптация контента под разные аудитории</li>
+                <li>Оптимизация под SEO-требования</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal4">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-секретарь</h3>
+            <p class="modal-description">Виртуальный помощник для обработки запросов и управления коммуникациями.</p>
+            <ul class="modal-features">
+                <li>Ответы на часто задаваемые вопросы</li>
+                <li>Запись на встречи и консультации</li>
+                <li>Координация задач и напоминания</li>
+                <li>Интеграция с календарями и мессенджерами</li>
+                <li>Персонализация взаимодействия</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal5">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-видеоагент</h3>
+            <p class="modal-description">Система автоматизации работы с видео-контентом и анализа видеоматериалов.</p>
+            <ul class="modal-features">
+                <li>Автоматическое создание таблиц экзаменов</li>
+                <li>Анализ видеозаписей</li>
+                <li>Генерация субтитров и аннотаций</li>
+                <li>Создание сценариев для видеоконтента</li>
+                <li>Оптимизация видео под разные платформы</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal6">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейроконтентагент</h3>
+            <p class="modal-description">Продвинутая система генерации сценариев и контент-стратегий.</p>
+            <ul class="modal-features">
+                <li>Создание сценариев для видеороликов</li>
+                <li>Разработка контент-стратегий</li>
+                <li>Генерация идей для контента</li>
+                <li>Анализ эффективности контента</li>
+                <li>Адаптация под целевую аудиторию</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="modal7">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 class="modal-title">Нейро-копирайтер по видео</h3>
+            <p class="modal-description">Специализированная система для создания текстового сопровождения видеоконтента.</p>
+            <ul class="modal-features">
+                <li>Написание сценариев для видео</li>
+                <li>Создание описаний и аннотаций</li>
+                <li>Генерация SEO-оптимизированных текстов</li>
+                <li>Адаптация контента под разные платформы</li>
+                <li>Анализ эффективности текстового сопровождения</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Loading animation
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading').classList.add('hidden');
+            }, 1000);
+        });
+
+        // Mobile menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.getElementById('navbar').classList.add('scrolled');
+            } else {
+                document.getElementById('navbar').classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile menu if open
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+
+        // Modal functionality
+        const modals = document.querySelectorAll('.modal');
+        const modalTriggers = document.querySelectorAll('[data-modal]');
+        const modalCloseButtons = document.querySelectorAll('.modal-close');
+
+        // Open modal
+        modalTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // Close modal
+        modalCloseButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+
+        // Close modal when clicking outside
+        modals.forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.portfolio-card, .service-item, .stack-item').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
