@@ -2,7 +2,7 @@
 services:
   nginx:
     image: nginx:alpine  # Используем облегченный образ
-    container_name: my_website_nginx
+    container_name: NikitaAI
     ports:
       - "80:80"  # Пробрасываем порт 80 хоста на порт 80 контейнера
     volumes:
