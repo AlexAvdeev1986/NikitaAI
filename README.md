@@ -18,13 +18,20 @@ project/
     └── photo_2025-10-14_18-20-51.jpg
 ```
 
+
+# Или Чтобы использовать Python 3.9 в проектах, создавайте виртуальные окружения:
+```bash
+python3.9 -m venv venv
+source venv/bin/activate
+
 ## Шаг 2: Локальный запуск на Fedora 42
 
 ### Установка Docker (если не установлен)
 
+
 ```bash
 # Установка Docker
-sudo dnf install docker docker-compose -y
+sudo dnf install podman podman-compose -y
 
 # Запуск и автозагрузка Docker
 sudo systemctl start docker
@@ -35,12 +42,6 @@ sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-### Изменения в файлах
-
-**1. Переименуйте файл:**
-```bash
-mv NikitaAI.html index.html
-```
 
 **2. Обновите `nginx/your-site.conf`:**
 
@@ -61,19 +62,22 @@ server {
 
 ```bash
 # Перейдите в директорию проекта
-cd /path/to/project
+cd NikitaAI
 
 # Запустите контейнер
-docker-compose up -d
+podman-compose up -d
 
 # Проверьте статус
-docker-compose ps
+podman-compose ps
 
 # Просмотрите логи
-docker-compose logs -f
-```
+ podman-compose logs -f
 
-Теперь сайт доступен по адресу: `http://localhost`
+# Откройте в браузере
+firefox http://127.0.0.1:8080
+
+```
+Теперь сайт доступен по адресу: `http://127.0.0.1:8080`
 
 ## Шаг 3: Развертывание на Ubuntu 22 с HTTPS
 
@@ -264,6 +268,8 @@ sudo firewall-cmd --reload
 ```
 
 Теперь ваш сайт будет доступен по адресу `https://nikitaai5151.serveminecraft.net` без отображения порта!
+
+
 # Просмотр логов контейнера
 sudo docker logs NikitaAI
 
@@ -282,3 +288,21 @@ sudo docker restart NikitaAI
 # Удалить контейнер
 sudo docker rm NikitaAI
 
+Для podman
+# Просмотр логов контейнера
+sudo podman logs NikitaAI
+
+# Просмотр логов в реальном времени
+sudo podman logs -f NikitaAI
+
+# Остановить контейнер
+sudo podman stop NikitaAI
+
+# Запустить остановленный контейнер
+sudo podman start NikitaAI
+
+# Перезапустить контейнер
+sudo podman restart NikitaAI
+
+# Удалить контейнер
+sudo podman rm NikitaAI
