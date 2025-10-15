@@ -2,11 +2,21 @@
  NikitaAI site
 
 
-Запустите контейнеры. Из папки с docker-compose.yml выполните команду:
+Шаг 2: Локальный запуск на Fedora 42Установка Docker (если не установлен)
 
-docker compose up -d
+# Установка Docker
+sudo dnf install docker docker-compose -y
 
-sudo docker run -d -p 8080:80 --name NikitaAI -v $(pwd):/usr/share/nginx/html nginx
+# Запуск и автозагрузка Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Добавление пользователя в группу docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+
+
 
 # Просмотр логов контейнера
 sudo docker logs NikitaAI
