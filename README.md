@@ -295,6 +295,12 @@ sudo docker restart NikitaAI
 # Удалить контейнер
 sudo docker rm NikitaAI
 
+
+Если вам нужно полностью удалить контейнер:
+
+bash
+docker-compose down -v  # остановит и удалит тома
+
 Для podman
 # Просмотр логов контейнера
 sudo podman logs NikitaAI
@@ -313,3 +319,8 @@ sudo podman restart NikitaAI
 
 # Удалить контейнер
 sudo podman rm NikitaAI
+
+
+# Если нужно обновить сайт
+
+sudo systemctl reload nginx
