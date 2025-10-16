@@ -184,6 +184,13 @@ sudo systemctl restart nginx
 ### 3.6 Настройка SSL с помощью Let's Encrypt
 
 ```bash
+sudo docker ps
+
+6. Проверьте статус Nginx
+sudo systemctl status nginx.service
+journalctl -xeu nginx.service
+
+
 # Получите SSL-сертификат
 sudo certbot --nginx -d nikitaai5151.serveminecraft.net
 
